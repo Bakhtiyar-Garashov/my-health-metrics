@@ -1,0 +1,41 @@
+apiVersion: 1
+
+datasources:
+  - name: TimescaleDB
+    type: postgres
+    access: proxy
+    url: <your-timescaledb-instance-url>:<port>
+    database: <your-database-name>
+    user: <your-username>
+    password: <your-password>
+    jsonData:
+      sslmode: "require" # Set SSL mode; use "require" if SSL is mandatory.
+      postgresVersion: 1200 # Use the appropriate PostgreSQL version for your TimescaleDB instance.
+      timescaledb: true # Enable TimescaleDB specific optimizations.
+    secureJsonData:
+      password: <your-password> # Use secureJsonData for sensitive information like passwords.
+
+# The annotations section is optional, you can use it if you want to annotate your data
+annotations:
+  list:
+    - name: Deployment
+      datasource: TimescaleDB
+      iconColor: "rgba(255, 96, 96, 1)"
+      enable: true
+      query:
+        - SELECT time, text, tags FROM annotation_table
+      regex: ""
+
+# The dashboards section is optional, you can use it to define preconfigured dashboards
+dashboards:
+  path: /var/lib/grafana/dashboards
+
+# The notifiers section is optional, you can use it to configure notification channels
+notifiers:
+  - name: email notifier
+    type: email
+    uid: email-notifier
+    org_id: 1
+    is_default: true
+    settings:
+      addresses: "alert@example.com"
